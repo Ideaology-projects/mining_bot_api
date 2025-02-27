@@ -21,7 +21,11 @@
   "devDependencies": {
     "@eslint/js": "^9.20.0",
     "@nestjs/testing": "^11.0.9",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.3",
+    "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.4",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
@@ -34,6 +38,7 @@
     "lint-staged": "^15.4.3",
     "nodemon": "^3.1.9",
     "prettier": "^3.5.1",
+    "prisma": "^6.3.1",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
@@ -41,7 +46,17 @@
     "typescript-eslint": "^8.24.0"
   },
   "dependencies": {
-    "dotenv": "^16.4.7"
+    "@prisma/client": "^6.4.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.8",
+    "bcryptjs": "^3.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": [

@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id            Int    @id @default(autoincrement())
+  walletAddress String @unique
+  createdAt     DateTime @default(now())
+  rewards       DailyReward[]
+
+  referralCode  String?      @unique @default(uuid())  
+  referredBy    String?     
+
+
+  referrals   Referral[]    @relation("ReferrerRelation")
+  referralsReceived Referral[] @relation("RefereeRelation")
+  referralRewards Reward[]
+}
+
+model DailyReward {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  rewardAmount   Int
+  lastRewardTime DateTime @default(now())
+  rewardKey      Int
+
+  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lastRewardTime])
+}
+
+model Referral {
+  id         Int      @id @default(autoincrement())
+  referrerId Int     
+  refereeId  Int  
+  status     String   @default("pending") 
+  createdAt  DateTime @default(now())
+
+  referrer   User     @relation("ReferrerRelation", fields: [referrerId], references: [id])
+  referee    User     @relation("RefereeRelation", fields: [refereeId], references: [id])
+}
+
+
+model Reward {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  points     Int
+  type       String   
+  status     String   @default("pending")  
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+}
