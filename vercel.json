@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "index.ts",
+        "use": "@vercel/node"
+      }
+    ],
+    "env": {
+      "PG_USER": "localhost",
+      "PG_HOST": "localhost",
+      "PG_DATABASE": "postgres",
+      "PG_PASSWORD": "admin",
+      "PG_PORT": "5432"
+    }
+  }
+  
