@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "start": "nodemon src/index.ts",
-  "dev": "nodemon src/index.ts",
+    "start": "nodemon src/index.ts",
+    "dev": "nodemon src/index.ts",
     "build": "tsc",
     "prepare": "husky install",
     "format": "prettier --write .",
@@ -27,6 +27,8 @@
     "@types/jest": "^29.5.14",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.4",
+    "@types/node-telegram-bot-api": "^0.64.7",
+    "@types/nodemailer": "^6.4.17",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
     "eslint": "^9.20.1",
@@ -50,13 +52,16 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.8",
     "bcryptjs": "^3.0.1",
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "ethers": "^6.13.5",
     "express": "^4.21.2",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-telegram-bot-api": "^0.66.0",
+    "nodemailer": "^6.10.0"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": [

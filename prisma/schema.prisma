@@ -22,7 +22,10 @@ model User {
 
   referralCode  String?      @unique @default(uuid())  
   referredBy    String?     
-
+  phoneNumber    String?  @unique
+  telegramUserId String?  @unique
+  otp            String?
+  otpExpiresAt   DateTime?
 
   referrals   Referral[]    @relation("ReferrerRelation")
   referralsReceived Referral[] @relation("RefereeRelation")
@@ -62,4 +65,11 @@ model Reward {
   createdAt  DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])
+}
+
+model Invitation {
+  id        String  @id @default(uuid())
+  name      String
+  email     String  @unique
+  createdAt DateTime @default(now())
 }

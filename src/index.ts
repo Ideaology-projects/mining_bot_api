@@ -6,7 +6,11 @@ import morgan from 'morgan';
 import authRoutes from './routes/auth.routes';
 import rewardRoutes from './routes/reward.routes';
 import refferalRoutes from './routes/referral.routes';
-
+// import botRoute from './routes/bot.routes'
+// import otpRoute from "./routes/sentotp.routes"
+// import bot from './controllers/bot.controller';
+// console.log("Telegram Bot is running...", bot);
+import inviteRoutes from './routes/invite.routes';
 dotenv.config();
 
 const app: Application = express();
@@ -26,6 +30,8 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/rewards', rewardRoutes);
 app.use('/api/v1/refferal', refferalRoutes);
+app.use('/api/v1/invitation', inviteRoutes);
+// app.use('/api/v1/otp', otpRoute)
 
 // Start the server
 const PORT = process.env.PORT || 8080;
