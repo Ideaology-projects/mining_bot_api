@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import prisma from '../database/prismaClient';
 import { generateToken } from '../utils/jwt';
 export const authenticateUser = async (req: Request, res: Response) => {
-  const { walletAddress, referralCode } = req.body;
-
+  const { walletAddress, referralCode, referredBy } = req.body;
+  console.log('referredBy', referredBy);
   if (!walletAddress) {
     res.status(400).json({ error: 'Wallet address is required' });
     return;
@@ -13,7 +13,7 @@ export const authenticateUser = async (req: Request, res: Response) => {
     let user = await prisma.user.findUnique({
       where: { walletAddress },
     });
-
+    console.log('useruseruseruseruseruser', user);
     // If user doesn't exist, create one (and process referral if referralCode is provided)
     if (!user) {
       // If referralCode provided, try to find the referring user

@@ -3,7 +3,7 @@ import prisma from '../database/prismaClient';
 
 export const getReferralStatus = async (req: Request, res: Response) => {
   const currentUserId = req.user?.id;
-
+  console.log('referral', currentUserId);
   try {
     const referrals = await prisma.referral.findMany({
       where: { referrerId: Number(currentUserId) },

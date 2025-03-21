@@ -15,22 +15,34 @@ datasource db {
 
 
 model User {
-  id            Int    @id @default(autoincrement())
-  walletAddress String @unique
-  createdAt     DateTime @default(now())
-  rewards       DailyReward[]
-
-  referralCode  String?      @unique @default(uuid())  
-  referredBy    String?     
-  phoneNumber    String?  @unique
-  telegramUserId String?  @unique
-  otp            String?
-  otpExpiresAt   DateTime?
-
-  referrals   Referral[]    @relation("ReferrerRelation")
+  id              Int    @id @default(autoincrement())
+  walletAddress   String @unique
+  createdAt       DateTime @default(now())
+  rewards         DailyReward[]
+  referralCode    String?  @unique @default(uuid())  
+  referredBy      String?     
+  phoneNumber     String?  @unique
+  telegramUserId  String?  @unique
+  otp             String?
+  otpExpiresAt    DateTime?
+  referrals       Referral[] @relation("ReferrerRelation")
   referralsReceived Referral[] @relation("RefereeRelation")
   referralRewards Reward[]
+
+  dailyCheckinRewards DailyCheckinRewards?  // 🟢 Just referencing, no @relation fields
 }
+
+model DailyCheckinRewards {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  lastCheckIn DateTime?
+  streak      Int      @default(0)
+  coins       Int      @default(0)
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
 
 model DailyReward {
   id             Int      @id @default(autoincrement())
