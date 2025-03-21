@@ -12,6 +12,8 @@ import refferalRoutes from './routes/referral.routes';
 // console.log("Telegram Bot is running...", bot);
 import inviteRoutes from './routes/invite.routes';
 import checkInRoutes from './routes/checkIn.routes';
+import orderRoutes from './routes/buyProduct.routes';
+
 dotenv.config();
 
 const app: Application = express();
@@ -33,6 +35,7 @@ app.use('/api/v1/rewards', rewardRoutes);
 app.use('/api/v1/refferal', refferalRoutes);
 app.use('/api/v1/invitation', inviteRoutes);
 app.use('/api/v1/checkin', checkInRoutes);
+app.use('/api/v1/orders', orderRoutes);
 // app.use('/api/v1/otp', otpRoute)
 
 // Start the server

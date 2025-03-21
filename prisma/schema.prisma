@@ -30,6 +30,7 @@ model User {
   referralRewards Reward[]
 
   dailyCheckinRewards DailyCheckinRewards?  // 🟢 Just referencing, no @relation fields
+  orders Order[]
 }
 
 model DailyCheckinRewards {
@@ -42,6 +43,25 @@ model DailyCheckinRewards {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Order {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  quantity  Int
+  totalCost Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id       Int    @id @default(autoincrement())
+  name     String
+  price    Int
+  stock    Int
+  orders   Order[]
+}
 
 
 model DailyReward {
