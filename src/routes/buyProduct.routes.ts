@@ -5,7 +5,6 @@ import { authMiddleware } from '../middlewares/auth.middleware';
 const router = express.Router();
 
 router.post('/purchase', authMiddleware, async (req, res) => {
-  console.log('ye route hai ');
   await purchaseProduct(req, res);
 });
 

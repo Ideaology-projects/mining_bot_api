@@ -31,6 +31,7 @@ model User {
 
   dailyCheckinRewards DailyCheckinRewards?  // 🟢 Just referencing, no @relation fields
   orders Order[]
+  totalBalance      Float @default(0.0)
 }
 
 model DailyCheckinRewards {

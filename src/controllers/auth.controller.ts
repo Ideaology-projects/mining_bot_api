@@ -13,7 +13,6 @@ export const authenticateUser = async (req: Request, res: Response) => {
     let user = await prisma.user.findUnique({
       where: { walletAddress },
     });
-    console.log('useruseruseruseruseruser', user);
     // If user doesn't exist, create one (and process referral if referralCode is provided)
     if (!user) {
       // If referralCode provided, try to find the referring user

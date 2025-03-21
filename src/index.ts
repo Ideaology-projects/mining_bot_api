@@ -13,6 +13,7 @@ import refferalRoutes from './routes/referral.routes';
 import inviteRoutes from './routes/invite.routes';
 import checkInRoutes from './routes/checkIn.routes';
 import orderRoutes from './routes/buyProduct.routes';
+import topMinors from './routes/topMinors.routes';
 
 dotenv.config();
 
@@ -36,7 +37,7 @@ app.use('/api/v1/refferal', refferalRoutes);
 app.use('/api/v1/invitation', inviteRoutes);
 app.use('/api/v1/checkin', checkInRoutes);
 app.use('/api/v1/orders', orderRoutes);
-// app.use('/api/v1/otp', otpRoute)
+app.use('/api/v1/minor', topMinors);
 
 // Start the server
 const PORT = process.env.PORT || 8080;
