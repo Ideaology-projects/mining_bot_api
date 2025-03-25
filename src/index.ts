@@ -14,6 +14,7 @@ import inviteRoutes from './routes/invite.routes';
 import checkInRoutes from './routes/checkIn.routes';
 import orderRoutes from './routes/buyProduct.routes';
 import topMinors from './routes/topMinors.routes';
+import reset from './routes/resetPassword.routes';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use('/api/v1/invitation', inviteRoutes);
 app.use('/api/v1/checkin', checkInRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/minor', topMinors);
+app.use('/api/v1/reset', reset);
 
 // Start the server
 const PORT = process.env.PORT || 8080;

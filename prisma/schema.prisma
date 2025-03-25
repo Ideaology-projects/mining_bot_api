@@ -16,9 +16,12 @@ datasource db {
 
 model User {
   id              Int    @id @default(autoincrement())
-  walletAddress   String @unique
+  walletAddress   String? @unique
   createdAt       DateTime @default(now())
   rewards         DailyReward[]
+  email           String?   @unique
+  password        String?
+  username        String?   @unique
   referralCode    String?  @unique @default(uuid())  
   referredBy      String?     
   phoneNumber     String?  @unique
@@ -28,7 +31,8 @@ model User {
   referrals       Referral[] @relation("ReferrerRelation")
   referralsReceived Referral[] @relation("RefereeRelation")
   referralRewards Reward[]
-
+  resetToken     String?
+  resetTokenExp  DateTime?
   dailyCheckinRewards DailyCheckinRewards?  // 🟢 Just referencing, no @relation fields
   orders Order[]
   totalBalance      Float @default(0.0)
@@ -63,7 +67,6 @@ model Product {
   stock    Int
   orders   Order[]
 }
-
 
 model DailyReward {
   id             Int      @id @default(autoincrement())
