@@ -15,18 +15,57 @@ datasource db {
 
 
 model User {
-  id            Int    @id @default(autoincrement())
-  walletAddress String @unique
-  createdAt     DateTime @default(now())
-  rewards       DailyReward[]
-
-  referralCode  String?      @unique @default(uuid())  
-  referredBy    String?     
-
-
-  referrals   Referral[]    @relation("ReferrerRelation")
+  id              Int    @id @default(autoincrement())
+  walletAddress   String? @unique
+  createdAt       DateTime @default(now())
+  rewards         DailyReward[]
+  email           String?   @unique
+  password        String?
+  username        String?   @unique
+  referralCode    String?  @unique @default(uuid())  
+  referredBy      String?     
+  phoneNumber     String?  @unique
+  telegramUserId  String?  @unique
+  otp             String?
+  otpExpiresAt    DateTime?
+  referrals       Referral[] @relation("ReferrerRelation")
   referralsReceived Referral[] @relation("RefereeRelation")
   referralRewards Reward[]
+  resetToken     String?
+  resetTokenExp  DateTime?
+  dailyCheckinRewards DailyCheckinRewards?  // 🟢 Just referencing, no @relation fields
+  orders Order[]
+  totalBalance      Float @default(0.0)
+}
+
+model DailyCheckinRewards {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  lastCheckIn DateTime?
+  streak      Int      @default(0)
+  coins       Int      @default(0)
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  quantity  Int
+  totalCost Int
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id       Int    @id @default(autoincrement())
+  name     String
+  price    Int
+  stock    Int
+  orders   Order[]
 }
 
 model DailyReward {
@@ -62,4 +101,11 @@ model Reward {
   createdAt  DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])
+}
+
+model Invitation {
+  id        String  @id @default(uuid())
+  name      String
+  email     String  @unique
+  createdAt DateTime @default(now())
 }
