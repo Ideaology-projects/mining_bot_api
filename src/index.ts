@@ -15,6 +15,8 @@ import checkInRoutes from './routes/checkIn.routes';
 import orderRoutes from './routes/buyProduct.routes';
 import topMinors from './routes/topMinors.routes';
 import reset from './routes/resetPassword.routes';
+import swaggerSpec from './utils/swaggerConfig';
+import swaggerUi from 'swagger-ui-express';
 
 dotenv.config();
 
@@ -26,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Sample Route
 app.get('/', (req, res) => {
   res.json({ message: 'Hello, Express with TypeScript!' });

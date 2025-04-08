@@ -1,0 +1,568 @@
+openapi: 3.0.0
+info:
+  title: MineBot API with TypeScript
+  description: This is the API documentation for the Express application built with TypeScript.
+  version: 1.0.0
+  contact:
+    name: Your Name
+    email: your.email@example.com
+    url: https://yourwebsite.com
+
+servers:
+  - url: 'http://localhost:3000/api/v1'
+    description: Development server
+  - url: 'http://35.77.96.67:3000/api/v1'
+    description: Live server
+openapi: 3.0.0
+info:
+  title: Express API with TypeScript
+  description: This is the API documentation for the Express application built with TypeScript.
+  version: 1.0.0
+  contact:
+    name: Your Name
+    email: your.email@example.com
+    url: https://yourwebsite.com
+
+servers:
+  - url: 'http://localhost:3000/api/v1'
+    description: Development server
+  - url: 'http://35.77.96.67:3000/api/v1'
+    description: Live server
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - BearerAuth: []
+paths:
+  /auth/create:
+    post:
+      summary: Create a new user with a wallet address and referral code
+      operationId: createUser
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                walletAddress:
+                  type: string
+                  description: The wallet address of the user
+                referralCode:
+                  type: string
+                  description: The referral code of the user
+      responses:
+        '200':
+          description: User created successfully
+        '400':
+          description: Bad request, missing required fields or invalid data
+        '500':
+          description: Internal server error
+
+  /invitation/invite:
+    post:
+      summary: Send an invitation to a user with their name and email
+      operationId: sendInvitation
+      tags:
+        - Send Invitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the person being invited
+                email:
+                  type: string
+                  description: The email address of the person being invited
+      security:
+        - BearerAuth: []  # This enforces the token requirement for this path
+      responses:
+        '200':
+          description: Invitation sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invitation sent successfully!"
+        '400':
+          description: Bad request, missing required fields or invalid data
+        '401':
+          description: Unauthorized, invalid or missing token
+        '500':
+          description: Internal server error
+
+  /reset/forgot-password:
+    post:
+      summary: Send a password reset email to the provided email address
+      operationId: forgotPassword
+      tags:
+        - Forgot Password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: The email address of the user requesting a password reset
+      responses:
+        '200':
+          description: Reset email sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Reset email sent"
+        '400':
+          description: Bad request, missing required fields or invalid data
+        '500':
+          description: Internal server error
+
+  /reset/reset-password:
+    get:
+      summary: Reset the user's password using the provided token and new password
+      operationId: resetPassword
+      tags:
+        - Reset Password
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            description: The token received in the password reset email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newPassword:
+                  type: string
+                  description: The new password for the user
+      responses:
+        '200':
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password reset successful"
+        '400':
+          description: Bad request, missing required fields or invalid data
+        '401':
+          description: Unauthorized, invalid or expired token
+        '500':
+          description: Internal server error
+
+  /refferal/referral-status:
+    post:
+      summary: Retrieve the status of referrals for the authenticated user
+      operationId: getReferralStatus
+      tags:
+        - Get Referral
+      security:
+        - BearerAuth: []  # This enforces the token requirement for this path
+      responses:
+        '200':
+          description: Referral status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  referrals:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The unique identifier of the referral
+                        referrerId:
+                          type: integer
+                          description: The ID of the user who referred the referee
+                        refereeId:
+                          type: integer
+                          description: The ID of the user who was referred
+                        status:
+                          type: string
+                          description: The current status of the referral (e.g., pending)
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: The timestamp when the referral was created
+                        referee:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: The unique identifier of the referee
+                            walletAddress:
+                              type: string
+                              description: The wallet address of the referee
+                            createdAt:
+                              type: string
+                              format: date-time
+                              description: The timestamp when the referee was created
+                            email:
+                              type: string
+                              description: The email address of the referee (if available)
+                            username:
+                              type: string
+                              description: The username of the referee (if available)
+                            referralCode:
+                              type: string
+                              description: The referral code of the referee
+                            referredBy:
+                              type: string
+                              description: The referral code of the user who referred the referee
+                            phoneNumber:
+                              type: string
+                              description: The phone number of the referee (if available)
+                            telegramUserId:
+                              type: string
+                              description: The Telegram user ID of the referee (if available)
+                            otp:
+                              type: string
+                              description: The OTP for the referee (if available)
+                            otpExpiresAt:
+                              type: string
+                              format: date-time
+                              description: The expiration time of the OTP (if available)
+                            resetToken:
+                              type: string
+                              description: The reset token for the referee (if available)
+                            resetTokenExp:
+                              type: string
+                              format: date-time
+                              description: The expiration time of the reset token (if available)
+                            totalBalance:
+                              type: number
+                              format: float
+                              description: The total balance of the referee
+        '401':
+          description: Unauthorized, invalid or missing token
+        '500':
+          description: Internal server error
+
+  /auth/login:
+    post:
+      summary: User login and get authorization token
+      operationId: loginUser
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: The email of the user
+                password:
+                  type: string
+                  description: The password of the user
+      responses:
+        '200':
+          description: Login successful, Bearer token returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: The Bearer token for the authenticated user
+        '400':
+          description: Bad request, invalid or missing email/password
+        '401':
+          description: Unauthorized, invalid credentials
+        '500':
+          description: Internal server error
+
+  /rewards/daily-reward:
+    post:
+      summary: Claim daily reward for the user
+      operationId: claimDailyReward
+      tags:
+        - Rewards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                DebugTimeDB:
+                  type: integer
+                  description: The time in milliseconds for debugging purposes
+                DBlastreward:
+                  type: string
+                  format: date-time
+                  description: The timestamp of the last reward claim
+                DBlastrewardkey:
+                  type: integer
+                  description: The unique identifier for the last reward claim
+      responses:
+        '200':
+          description: Reward successfully claimed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Reward claimed successfully!"
+        '400':
+          description: Bad request, invalid data provided
+        '401':
+          description: Unauthorized, invalid token
+        '409':
+          description: Conflict, reward already claimed today
+        '500':
+          description: Internal server error
+  /rewards/all-reward:
+    get:
+      summary: Retrieve all rewards for the user
+      operationId: getAllRewards
+      tags:
+        - Rewards
+      security:
+        - BearerAuth: []  # This enforces the token requirement for this path
+      responses:
+        '200':
+          description: Successfully retrieved all rewards
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rewards:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rewardId:
+                          type: integer
+                          description: The unique identifier of the reward
+                        rewardType:
+                          type: string
+                          description: The type of the reward
+                        amount:
+                          type: number
+                          description: The amount of the reward
+                        claimedAt:
+                          type: string
+                          format: date-time
+                          description: The timestamp when the reward was claimed
+        '401':
+          description: Unauthorized, invalid or missing token
+        '500':
+          description: Internal server error
+  
+  /checkin/daily-checkin-rewards/{id}:
+    post:
+      summary: Check-in for daily rewards for a given user ID
+      operationId: dailyCheckinRewards
+      tags:
+        - Check-In Rewards
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The unique identifier of the user for the check-in process
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The ID of the user checking in
+      responses:
+        '200':
+          description: Successfully checked in, rewards earned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Checked in! You earned 100 coins"
+                  coins:
+                    type: integer
+                    example: 100
+        '400':
+          description: Bad request, invalid data or user ID
+        '401':
+          description: Unauthorized, invalid or missing token
+        '500':
+          description: Internal server error
+  /minor/top-minors:
+    get:
+      summary: Retrieve the list of top minors based on a user's ID
+      operationId: getTopMinors
+      tags:
+        - Get Top Minor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  description: The ID of the user to retrieve the top minors for
+      responses:
+        '200':
+          description: List of top minors retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The unique identifier of the minor
+                        walletAddress:
+                          type: string
+                          description: The wallet address of the minor (optional)
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: The timestamp when the minor was created
+                        email:
+                          type: string
+                          description: The email address of the minor (optional)
+                        password:
+                          type: string
+                          description: The hashed password of the minor (optional)
+                        username:
+                          type: string
+                          description: The username of the minor (optional)
+                        referralCode:
+                          type: string
+                          description: The referral code of the minor
+                        referredBy:
+                          type: string
+                          description: The referral code of the user who referred the minor (optional)
+                        phoneNumber:
+                          type: string
+                          description: The phone number of the minor (optional)
+                        telegramUserId:
+                          type: string
+                          description: The Telegram user ID of the minor (optional)
+                        otp:
+                          type: string
+                          description: The OTP for the minor (optional)
+                        otpExpiresAt:
+                          type: string
+                          format: date-time
+                          description: The expiration time of the OTP (optional)
+                        resetToken:
+                          type: string
+                          description: The reset token for the minor (optional)
+                        resetTokenExp:
+                          type: string
+                          format: date-time
+                          description: The expiration time of the reset token (optional)
+                        totalBalance:
+                          type: number
+                          format: float
+                          description: The total balance of the minor
+        '400':
+          description: Bad request, invalid or missing user ID
+        '401':
+          description: Unauthorized, invalid or missing token
+        '500':
+          description: Internal server error
+  
+  /orders/purchase:
+    post:
+      summary: Purchase an order
+      tags:
+        - Orders by Products
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - productId
+                - quantity
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+                productId:
+                  type: integer
+                  example: 1
+                quantity:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Order placed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Order placed successfully
+        '400':
+          description: Invalid user or product ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid user or product ID
+        '401':
+          description: Unauthorized - Missing or invalid token
