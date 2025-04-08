@@ -86,7 +86,6 @@ export const authenticateUser = async (req: Request, res: Response) => {
 
     if (walletAddress) {
       user = await prisma.user.findUnique({ where: { walletAddress } });
-
       if (!user) {
         let referrer = null;
         if (referralCode) {
