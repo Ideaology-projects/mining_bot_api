@@ -434,16 +434,6 @@ paths:
       operationId: getTopMinors
       tags:
         - Get Top Minor
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                userId:
-                  type: integer
-                  description: The ID of the user to retrieve the top minors for
       responses:
         '200':
           description: List of top minors retrieved successfully
