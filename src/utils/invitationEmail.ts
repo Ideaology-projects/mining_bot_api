@@ -55,7 +55,7 @@ const sendResetEmail = async (email: string, token: string) => {
     from: `"Support" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Password Reset',
-    html: `<p>Please copy the link and <a href="http://localhost:3000/api/v1/reset/reset-password?token=${token}">reset your password</a>. This link expires in 1 hour.</p>`,
+    html: `<p>Please copy the link and <a href="http://18.119.105.184/api/v1/reset/reset-password?token=${token}">reset your password</a>. This link expires in 1 hour.</p>`,
   });
 };
 
