@@ -6,6 +6,9 @@ export const getReferralStatus = async (req: Request, res: Response) => {
   console.log('referral', currentUserId);
   try {
     const referrals = await prisma.referral.findMany({
+      where: {
+        referrerId: currentUserId,
+      },
       include: { referee: true },
     });
     res.json({ referrals });

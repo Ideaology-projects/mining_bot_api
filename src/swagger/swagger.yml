@@ -11,7 +11,7 @@ info:
 servers:
   - url: 'http://localhost:3000/api/v1'
     description: Development server
-  - url: 'http://35.77.96.67:3000/api/v1'
+  - url: 'http://18.119.105.184/api/v1'
     description: Live server
 openapi: 3.0.0
 info:
@@ -26,7 +26,7 @@ info:
 servers:
   - url: 'http://localhost:3000/api/v1'
     description: Development server
-  - url: 'http://35.77.96.67:3000/api/v1'
+  - url: 'http://18.119.105.184/api/v1'
     description: Live server
 components:
   securitySchemes:
@@ -556,3 +556,40 @@ paths:
                     example: Invalid user or product ID
         '401':
           description: Unauthorized - Missing or invalid token
+  /refferal/referral-reward:
+    post:
+      summary: Claim referral reward
+      tags:
+        - Claim referral reward
+      description: Endpoint to claim a referral reward based on tier and amount.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rewardAmount:
+                  type: integer
+                  example: 10000
+                rewardTier:
+                  type: integer
+                  example: 3
+              required:
+                - rewardAmount
+                - rewardTier
+      responses:
+        '200':
+          description: Successfully claimed referral reward
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully claimed a reward of 10000 for tier 3.
+        '400':
+          description: Invalid input
+        '500':
+          description: Server error

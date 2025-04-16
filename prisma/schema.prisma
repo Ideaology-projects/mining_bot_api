@@ -36,6 +36,7 @@ model User {
   dailyCheckinRewards DailyCheckinRewards?  // 🟢 Just referencing, no @relation fields
   orders Order[]
   totalBalance      Float @default(0.0)
+  referralRewardClaims   ReferralRewardClaim[]
 }
 
 model DailyCheckinRewards {
@@ -108,4 +109,16 @@ model Invitation {
   name      String
   email     String  @unique
   createdAt DateTime @default(now())
+}
+
+model ReferralRewardClaim {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  rewardAmount Int
+  rewardTier   Int
+  claimedAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, rewardTier])
 }
