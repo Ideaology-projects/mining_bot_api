@@ -13,6 +13,7 @@ import refferalRoutes from './routes/referral.routes';
 import inviteRoutes from './routes/invite.routes';
 import checkInRoutes from './routes/checkIn.routes';
 import orderRoutes from './routes/buyProduct.routes';
+import productRoutes from './routes/productRoutes.route';
 import topMinors from './routes/topMinors.routes';
 import reset from './routes/resetPassword.routes';
 import swaggerSpec from './utils/swaggerConfig';
@@ -42,6 +43,7 @@ app.use('/api/v1/checkin', checkInRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/minor', topMinors);
 app.use('/api/v1/reset', reset);
+app.use('/api/v1/product',productRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 8080;
