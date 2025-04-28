@@ -49,8 +49,7 @@ async function sendEmail({
 }
 
 const sendResetEmail = async (email: string, token: string) => {
-  // const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-
+  
   await transporter.sendMail({
     from: `"Support" <${process.env.EMAIL_USER}>`,
     to: email,

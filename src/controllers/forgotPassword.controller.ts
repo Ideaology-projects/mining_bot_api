@@ -31,10 +31,6 @@ export const resetPassword = async (req: Request, res: Response) => {
   try {
     const token = req.query.token as string;
     const { newPassword } = req.body;
-    if (!token || !newPassword) {
-      return res.status(400).json({ message: 'Missing token or newPassword' });
-    }
-
     let decoded: { id: number } | null = null;
 
     try {

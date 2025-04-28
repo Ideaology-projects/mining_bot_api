@@ -4,13 +4,13 @@ import {
   resetPassword,
 } from '../controllers/forgotPassword.controller';
 const router = Router();
-import { authMiddleware } from '../middlewares/auth.middleware';
+// import { authMiddleware } from '../middlewares/auth.middleware';
 
-router.post('/forgot-password', authMiddleware, async (req, res) => {
+router.post('/forgot-password', async (req, res) => {
   await forgotPassword(req, res);
 });
 
-router.get('/reset-password', authMiddleware, async (req, res) => {
+router.post('/reset-password', async (req, res) => {
   await resetPassword(req, res);
 });
 

@@ -4,18 +4,18 @@ import prisma from '../database/prismaClient';
 export const claimReferralReward = async (
   req: Request,
   res: Response,
-): Promise<void> => {
+): Promise<void> => { 
   const currentUserId = req.user?.id;
   const { rewardAmount, rewardTier } = req.body;
 
   if (!currentUserId) {
     res.status(401).json({ message: 'Unauthorized: User ID not found.' });
+    return; 
   }
 
   if (!rewardAmount || !rewardTier) {
-    res
-      .status(400)
-      .json({ message: 'rewardAmount and rewardTier are required.' });
+    res.status(400).json({ message: 'rewardAmount and rewardTier are required.' });
+    return;
   }
 
   try {
@@ -38,17 +38,15 @@ export const claimReferralReward = async (
       eligibleAmount = 10000;
       eligibleTier = 3;
     } else {
-      res
-        .status(400)
-        .json({ message: 'Not enough referrals to claim a reward.' });
+      res.status(400).json({ message: 'Not enough referrals to claim a reward.' });
+      return;
     }
 
     if (rewardAmount !== eligibleAmount || rewardTier !== eligibleTier) {
-      res
-        .status(400)
-        .json({
-          message: 'Invalid reward tier or amount based on referral count.',
-        });
+      res.status(400).json({
+        message: 'Invalid reward tier or amount based on referral count.',
+      });
+      return;
     }
 
     const existingClaim = await prisma.referralRewardClaim.findFirst({
@@ -59,9 +57,8 @@ export const claimReferralReward = async (
     });
 
     if (existingClaim) {
-      res
-        .status(400)
-        .json({ message: 'Reward already claimed for this tier.' });
+      res.status(400).json({ message: 'Reward already claimed for this tier.' });
+      return;
     }
 
     await prisma.referralRewardClaim.create({

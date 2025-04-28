@@ -33,10 +33,14 @@ model User {
   referralRewards Reward[]
   resetToken     String?
   resetTokenExp  DateTime?
-  dailyCheckinRewards DailyCheckinRewards?  // 🟢 Just referencing, no @relation fields
+  dailyCheckinRewards DailyCheckinRewards?  
   orders Order[]
   totalBalance      Float @default(0.0)
   referralRewardClaims   ReferralRewardClaim[]
+  isEmailVerified Boolean @default(false)
+  emailToken  String 
+  emailSentAt    DateTime @default(now())
+  emailVerifiedAt  DateTime?
 }
 
 model DailyCheckinRewards {
