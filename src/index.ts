@@ -18,6 +18,7 @@ import topMinors from './routes/topMinors.routes';
 import reset from './routes/resetPassword.routes';
 import swaggerSpec from './utils/swaggerConfig';
 import swaggerUi from 'swagger-ui-express';
+import sendEmail from './routes/verifyEamil.routes';
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/minor', topMinors);
 app.use('/api/v1/reset', reset);
 app.use('/api/v1/product',productRoutes);
+app.use('/api/v1/email',sendEmail);
 
 // Start the server
 const PORT = process.env.PORT || 8080;

@@ -52,8 +52,7 @@ export const getAllRewards = async (req: Request, res: Response) => {
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }
-    const {id} = req.params;
-    const userId = parseInt(id);
+    const userId = req.user.id;
     const rewards = await prisma.dailyReward.findMany({
       where: { userId },
       orderBy: { lastRewardTime: 'desc' },
