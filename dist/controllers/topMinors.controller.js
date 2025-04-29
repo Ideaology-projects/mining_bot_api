@@ -9,15 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const auth_controller_1 = require("../controllers/auth.controller");
-const router = (0, express_1.Router)();
-const auth_middleware_1 = require("../middlewares/auth.middleware");
-router.post('/create', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_controller_1.authenticateUser)(req, res);
-}));
-router.get('/protected', auth_middleware_1.authMiddleware, auth_controller_1.protectedRoute);
-router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_controller_1.loginUser)(req, res);
-}));
-exports.default = router;
+exports.TopMinors = void 0;
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
+const TopMinors = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield prisma.user.findMany({
+            orderBy: {
+                totalBalance: 'desc',
+            },
+            take: 10,
+        });
+        res.json({ success: true, data: users });
+    }
+    catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+exports.TopMinors = TopMinors;

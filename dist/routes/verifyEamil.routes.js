@@ -8,16 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const auth_controller_1 = require("../controllers/auth.controller");
-const router = (0, express_1.Router)();
-const auth_middleware_1 = require("../middlewares/auth.middleware");
-router.post('/create', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_controller_1.authenticateUser)(req, res);
+const express_1 = __importDefault(require("express"));
+const verifyEmail_controller_1 = require("../controllers/verifyEmail.controller");
+const router = express_1.default.Router();
+router.get('/verify-email', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, verifyEmail_controller_1.verifyEmail)(req, res);
 }));
-router.get('/protected', auth_middleware_1.authMiddleware, auth_controller_1.protectedRoute);
-router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_controller_1.loginUser)(req, res);
+router.post('/resend-verification', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, verifyEmail_controller_1.resendVerificationEmail)(req, res);
 }));
 exports.default = router;

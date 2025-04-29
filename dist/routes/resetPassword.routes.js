@@ -10,14 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const auth_controller_1 = require("../controllers/auth.controller");
+const forgotPassword_controller_1 = require("../controllers/forgotPassword.controller");
 const router = (0, express_1.Router)();
-const auth_middleware_1 = require("../middlewares/auth.middleware");
-router.post('/create', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_controller_1.authenticateUser)(req, res);
+// import { authMiddleware } from '../middlewares/auth.middleware';
+router.post('/forgot-password', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, forgotPassword_controller_1.forgotPassword)(req, res);
 }));
-router.get('/protected', auth_middleware_1.authMiddleware, auth_controller_1.protectedRoute);
-router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_controller_1.loginUser)(req, res);
+router.post('/reset-password', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, forgotPassword_controller_1.resetPassword)(req, res);
 }));
 exports.default = router;

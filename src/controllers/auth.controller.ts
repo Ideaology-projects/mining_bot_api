@@ -55,7 +55,7 @@ export const authenticateUser = async (req: Request, res: Response) => {
         },
       });
       const emailVerificationUrl = `http://18.119.105.184/api/v1/email/verify-email?token=${emailToken}`;
-
+    
       await sendEmail({
         to: email,
         subject: 'Confirm your email',
