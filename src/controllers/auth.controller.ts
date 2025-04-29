@@ -90,10 +90,7 @@ export const authenticateUser = async (req: Request, res: Response) => {
       }
     }
 
-    res.status(200).json({
-      "message": "User registered successfully. A verification email has been sent. Please verify your email to log in.",
-    }
-    )
+
     if (!user) {
       return res.status(500).json({ message: 'User registration failed.' });
     }
@@ -103,10 +100,13 @@ export const authenticateUser = async (req: Request, res: Response) => {
       user.walletAddress || user.email || '',
       user.id,
     );
-
-    return res
-      .status(201)
-      .json({ token, user, message: 'User created successfully!' });
+    res.status(200).json({
+      "message": "User registered successfully. A verification email has been sent. Please verify your email to log in.",
+    }
+    )
+    // return res
+    //   .status(201)
+    //   .json({ token, user, message: 'User created successfully!' });
 
   } catch (error) {
     console.error('Registration Error:', error);
