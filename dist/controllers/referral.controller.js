@@ -19,7 +19,9 @@ const getReferralStatus = (req, res) => __awaiter(void 0, void 0, void 0, functi
     const currentUserId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
     try {
         const referrals = yield prismaClient_1.default.referral.findMany({
-            where: { referrerId: Number(currentUserId) },
+            where: {
+                referrerId: currentUserId,
+            },
             include: { referee: true },
         });
         res.json({ referrals });

@@ -8,16 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const auth_controller_1 = require("../controllers/auth.controller");
-const router = (0, express_1.Router)();
+const express_1 = __importDefault(require("express"));
+const topMinors_controller_1 = require("../controllers/topMinors.controller");
 const auth_middleware_1 = require("../middlewares/auth.middleware");
-router.post('/create', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_controller_1.authenticateUser)(req, res);
-}));
-router.get('/protected', auth_middleware_1.authMiddleware, auth_controller_1.protectedRoute);
-router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, auth_controller_1.loginUser)(req, res);
+const router = express_1.default.Router();
+router.get('/top-minors', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, topMinors_controller_1.TopMinors)(req, res);
 }));
 exports.default = router;

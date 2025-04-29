@@ -38,7 +38,7 @@ model User {
   totalBalance      Float @default(0.0)
   referralRewardClaims   ReferralRewardClaim[]
   isEmailVerified Boolean @default(false)
-  emailToken  String 
+  emailToken  String? 
   emailSentAt    DateTime @default(now())
   emailVerifiedAt  DateTime?
 }
