@@ -31,14 +31,14 @@ model User {
   referrals       Referral[] @relation("ReferrerRelation")
   referralsReceived Referral[] @relation("RefereeRelation")
   referralRewards Reward[]
-  resetToken     String?
+  resetToken     String? 
   resetTokenExp  DateTime?
   dailyCheckinRewards DailyCheckinRewards?  
   orders Order[]
   totalBalance      Float @default(0.0)
   referralRewardClaims   ReferralRewardClaim[]
   isEmailVerified Boolean @default(false)
-  emailToken  String? 
+  emailToken  String? @unique
   emailSentAt    DateTime @default(now())
   emailVerifiedAt  DateTime?
 }
