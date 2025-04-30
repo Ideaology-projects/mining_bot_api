@@ -38,7 +38,7 @@ export const verifyEmail = async (req: Request, res: Response): Promise<Response
       await prisma.user.update({
         where: { email: decoded.walletAddress },
         data: {
-          emailToken: "", 
+          emailToken: null, 
         },
       });
     }
@@ -46,7 +46,7 @@ export const verifyEmail = async (req: Request, res: Response): Promise<Response
     await prisma.user.update({
       where: { email: decoded.walletAddress },
       data: {
-        emailToken: "", 
+        emailToken: null, 
         isEmailVerified: true, 
         emailVerifiedAt: new Date(), 
       },
