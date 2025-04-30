@@ -48,13 +48,14 @@ async function sendEmail({
   }
 }
 
-const sendResetEmail = async (email: string, token: string) => {
+const sendResetEmail = async (email: string, token: string, otp: string) => {
   
   await transporter.sendMail({
     from: `"Support" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Password Reset',
-    html: `<p>Please copy the link and <a href="http://18.119.105.184/api/v1/reset/reset-password?token=${token}">reset your password</a>. This link expires in 1 hour.</p>`,
+    html: `<p>You requested to reset your password. Use the following OTP code to proceed:</p>
+    <h2>${otp}</h2>`
   });
 };
 

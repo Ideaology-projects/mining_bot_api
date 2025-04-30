@@ -45,7 +45,7 @@ app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/minor', topMinors);
 app.use('/api/v1/reset', reset);
 app.use('/api/v1/product',productRoutes);
-app.use('/api/v1/email',sendEmail);
+app.use('/api/v1/otp',sendEmail);
 
 // Start the server
 const PORT = process.env.PORT || 8080;

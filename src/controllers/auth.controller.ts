@@ -7,7 +7,9 @@ import {sendEmail }from '../utils/invitationEmail';
 export const authenticateUser = async (req: Request, res: Response) => {
   try {
     const { walletAddress, email, username, password, referralCode } = req.body;
-
+    function generateOTP(): string {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    }
     if (!walletAddress && (!email || !username || !password)) {
       return res
         .status(400)
@@ -41,8 +43,9 @@ export const authenticateUser = async (req: Request, res: Response) => {
           .status(409)
           .json({ message: 'User with this email already exists.' });
       }
-      const emailToken = generateToken(email, Date.now());
+      // const emailToken = generateToken(email, Date.now());
       const hashedPassword = await hashPassword(password);
+      const otp = generateOTP();
       user = await prisma.user.create({
         data: {
           username,
@@ -51,18 +54,17 @@ export const authenticateUser = async (req: Request, res: Response) => {
           walletAddress,
           referredBy: referrer ? referrer.referralCode : null,
           isEmailVerified: false,
-          emailToken,
+          // emailToken,
+          otp
         },
       });
-      const emailVerificationUrl = `http://18.119.105.184/api/v1/email/verify-email?token=${emailToken}`;
+      // const emailVerificationUrl = `http://localhost:3000/api/v1/email/verify-otp?token=${emailToken}`;
     
       await sendEmail({
         to: email,
         subject: 'Confirm your email',
         html: `<p>Hi ${username},</p>
-               <p>Please verify your email by clicking the link below:</p>
-              <a href="${emailVerificationUrl}">Verify Email</a>
-               <p>This link will expire in 1 hour.</p>`,
+              <p>Your verification OTP code is: <strong>${otp}</strong></p>`,
       });
   
       if (referrer && user) {
@@ -101,7 +103,7 @@ export const authenticateUser = async (req: Request, res: Response) => {
       user.id,
     );
     res.status(200).json({
-      "message": "User registered successfully. A verification email has been sent. Please verify your email to log in.",
+      "message": "User registered successfully. An OTP has been sent to your email for verification.",
     }
     )
     // return res
