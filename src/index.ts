@@ -19,6 +19,7 @@ import reset from './routes/resetPassword.routes';
 import swaggerSpec from './utils/swaggerConfig';
 import swaggerUi from 'swagger-ui-express';
 import sendEmail from './routes/verifyEamil.routes';
+import startMine from './routes/startMining.route'
 
 dotenv.config();
 
@@ -46,6 +47,11 @@ app.use('/api/v1/minor', topMinors);
 app.use('/api/v1/reset', reset);
 app.use('/api/v1/product',productRoutes);
 app.use('/api/v1/otp',sendEmail);
+app.use('/api/v1/mining',startMine)
+
+// Import and run the cron job (background process)
+import('./jobs/balanceCron'); // This will run the cron job automatically
+
 
 // Start the server
 const PORT = process.env.PORT || 8080;
