@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "initialMultiplier" DOUBLE PRECISION NOT NULL DEFAULT 1;

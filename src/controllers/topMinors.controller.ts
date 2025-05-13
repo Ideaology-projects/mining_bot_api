@@ -11,6 +11,7 @@ export const TopMinors = async (req: Request, res: Response) => {
       },
       take: 10,
     });
+    console.log('Top Minors:', users);
 
     res.json({ success: true, data: users });
   } catch (error) {

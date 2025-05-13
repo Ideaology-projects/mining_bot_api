@@ -42,6 +42,29 @@ model User {
   emailSentAt    DateTime @default(now())
   emailVerifiedAt  DateTime?
   otpVerified Boolean @default(false)
+  boosters    Booster[]
+}
+
+model BoosterTypeConfig {
+  id           String    @id @default(uuid())
+  type         String    @unique               
+  multiplier   Float                                                                                  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Booster {
+  id         String    @id @default(uuid())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  boosterType         String    @unique 
+  multiplier   Float 
+  isBoosted   Boolean   @default(false)
+  startTime  DateTime
+  endTime    DateTime
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  initialMultiplier Float     @default(1)
 }
 
 model DailyCheckinRewards {
