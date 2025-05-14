@@ -139,11 +139,16 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     const user = await prisma.user.findUnique({ where: { email } });
-
+    
     if (!user) {
     return res.status(401).json({ message: 'Invalid email or password!' });
     }
 
+    await prisma.user.update({
+    where: { id: user.id },
+    data: { isOnline: true },
+    });
+    
     // Check if the user has verified their email
     if (!user.isEmailVerified) {
     return res.status(403).json({

@@ -49,8 +49,13 @@ app.use('/api/v1/product',productRoutes);
 app.use('/api/v1/otp',sendEmail);
 app.use('/api/v1/mining',startMine)
 
-// Import and run the cron job (background process)
-import('./jobs/balanceCron'); // This will run the cron job automatically
+const startCronJob = async () => {
+  const { default: balanceCronJob } = await import('./jobs/balanceCron');
+  balanceCronJob.start();  // Start the cron job
+  console.log('✔️ Cron job started!');
+};
+
+startCronJob(); // Call to start the cron job
 
 
 // Start the server
