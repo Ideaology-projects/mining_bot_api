@@ -43,6 +43,7 @@ model User {
   emailVerifiedAt  DateTime?
   otpVerified Boolean @default(false)
   boosters    Booster[]
+  isOnline     Boolean  @default(false)
 }
 
 model Booster {

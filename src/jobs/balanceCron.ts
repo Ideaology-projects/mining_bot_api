@@ -1,21 +1,30 @@
 import cron from 'node-cron';
 import prisma from '../database/prismaClient';
 
-cron.schedule('* * * * *', async () => {
+const balanceCronJob = cron.schedule('* * * * *', async () => {
   const now = new Date();
   console.log('⛏️ Running mining cron job at', now.toISOString());
 
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      where: { isOnline: true },
+    });
 
-    for (const user of users) {
+    // ✅ Stop cron if no users online
+    if (users.length === 0) {
+      console.log('📴 No online users — stopping cron');
+      balanceCronJob.stop();
+      return;
+    }
+
+    await Promise.all(users.map(async (user) => {
       const booster = await prisma.booster.findFirst({
         where: {
           userId: user.id,
           isBoosted: true,
           startTime: { lte: now },
-          endTime: { gte: now }
-        }
+          endTime: { gte: now },
+        },
       });
 
       const initialMultiplier = booster?.initialMultiplier ?? 1;
@@ -29,16 +38,18 @@ cron.schedule('* * * * *', async () => {
         where: { id: user.id },
         data: {
           totalBalance: {
-            increment: incrementAmount
-          }
-        }
+            increment: incrementAmount,
+          },
+        },
       });
 
       console.log(
         `✔️ User ${user.id} mined ${incrementAmount} (multiplier: ${totalMultiplier})`
       );
-    }
+    }));
   } catch (error) {
     console.error('❌ Cron job error:', error);
   }
 });
+
+export default balanceCronJob;
