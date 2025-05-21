@@ -144,12 +144,6 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(401).json({ message: 'Invalid email or password!' });
     }
 
-    await prisma.user.update({
-    where: { id: user.id },
-    data: { isOnline: true },
-    });
-    
-    // Check if the user has verified their email
     if (!user.isEmailVerified) {
     return res.status(403).json({
       message: 'Your email is not verified. Please verify your email to log in.',
@@ -163,7 +157,12 @@ export const loginUser = async (req: Request, res: Response) => {
 
     const token = generateToken(user.email || '', user.id);
 
-    return res.status(200).json({ token, user, message: 'Login successful!' });
+    const newUser = await prisma.user.update({
+    where: { id: user.id },
+    data: { isOnline: true },
+    });
+    
+    return res.status(200).json({ token, newUser, message: 'Login successful!' });
   } catch (error) {
     console.error('Login Error:', error);
     return res.status(500).json({ message: 'Internal Server Error' });
