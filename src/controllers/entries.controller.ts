@@ -34,3 +34,17 @@ export const entriesAgaintsUser = async (req: Request, res: Response) => {
   }
 };
 
+export const getEntryAgainstUser = async (req: Request, res: Response) => {
+ const userId = req.user?.id;
+ try {
+  const entry = await prisma.entry.findMany({
+    where: {
+      id:userId
+    }
+  })
+  res.json({ success: true, data: entry });
+ } catch (error) {
+    console.error('Error getting entry:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+ }
+}
