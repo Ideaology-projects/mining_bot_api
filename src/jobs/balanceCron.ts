@@ -3,14 +3,12 @@ import prisma from '../database/prismaClient';
 
 const balanceCronJob = cron.schedule('* * * * *', async () => {
   const now = new Date();
-  console.log('⛏️ Running mining cron job at', now.toISOString());
-
+  // console.log('⛏️ Running mining cron job at', now.toISOString());
   try {
     const users = await prisma.user.findMany({
       where: { isOnline: true },
     });
 
-    // ✅ Stop cron if no users online
     if (users.length === 0) {
       console.log('📴 No online users — stopping cron');
       balanceCronJob.stop();
@@ -43,9 +41,9 @@ const balanceCronJob = cron.schedule('* * * * *', async () => {
         },
       });
 
-      console.log(
-        `✔️ User ${user.id} mined ${incrementAmount} (multiplier: ${totalMultiplier})`
-      );
+      // console.log(
+      //   `✔️ User ${user.id} mined ${incrementAmount} (multiplier: ${totalMultiplier})`
+      // );
     }));
   } catch (error) {
     console.error('❌ Cron job error:', error);
