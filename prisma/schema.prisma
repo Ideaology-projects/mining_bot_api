@@ -44,6 +44,17 @@ model User {
   otpVerified Boolean @default(false)
   boosters    Booster[]
   isOnline     Boolean  @default(false)
+  entries   Entry[]
+}
+
+model Entry {
+  id        Int     @id @default(autoincrement())
+  uuid      String
+  value     String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+
+  @@unique([uuid, userId]) 
 }
 
 model Booster {
