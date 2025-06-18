@@ -24,7 +24,7 @@ interface EmailOptions {
  * @returns {Promise<nodemailer.SentMessageInfo>} - Email sending result
  */
 async function sendEmail({
-  from = 'no_reply@rechargermonauto.com',
+  from = 'rao977684@gmail.com',
   to,
   subject,
   text,
@@ -48,7 +48,7 @@ async function sendEmail({
   }
 }
 
-const sendResetEmail = async (email: string, token: string, otp: string) => {
+const sendResetEmail = async (email: string, resetToken: string, otp: string) => {
   
   await transporter.sendMail({
     from: `"Support" <${process.env.EMAIL_USER}>`,
