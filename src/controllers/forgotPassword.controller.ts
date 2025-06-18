@@ -24,8 +24,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
       where: { email },
       data: { resetToken, resetTokenExp: expiration, otpExpiresAt:otpExpiration, otp },
     });
+
     await sendResetEmail(email, resetToken, otp);
     res.json({ message: 'Password reset email with OTP has been sent' });
+    
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
