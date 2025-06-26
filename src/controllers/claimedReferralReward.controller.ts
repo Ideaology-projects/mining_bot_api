@@ -53,6 +53,7 @@ export const claimReferralReward = async (
       where: {
         userId: currentUserId,
         rewardTier,
+        isClaimed: true
       },
     });
 
@@ -75,6 +76,55 @@ export const claimReferralReward = async (
     });
   } catch (error) {
     console.error('Reward Claim Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const isClaimedReward = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const currentUserId = req.user?.id;
+  const { rewardTier, isClaimed } = req.body;
+
+  if (!currentUserId) {
+    res.status(401).json({ message: 'Unauthorized: User ID not found.' });
+    return;
+  }
+
+  if (typeof isClaimed !== 'boolean' || !rewardTier) {
+    res.status(400).json({ message: 'isClaimed (boolean) and rewardTier are required.' });
+    return;
+  }
+
+  try {
+    const existingClaim = await prisma.referralRewardClaim.findFirst({
+      where: {
+        userId: currentUserId,
+        rewardTier,
+      },
+    });
+
+    if (!existingClaim) {
+      res.status(404).json({ message: 'No reward found for this user and tier.' });
+      return;
+    }
+
+    const updatedClaim = await prisma.referralRewardClaim.update({
+      where: {
+        id: existingClaim.id,
+      },
+      data: {
+        isClaimed,
+      },
+    });
+
+    res.json({
+      message: `Reward claim status updated successfully.`,
+      updatedClaim,
+    });
+  } catch (error) {
+    console.error('Error updating isClaimed:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
