@@ -148,6 +148,7 @@ model ReferralRewardClaim {
   rewardAmount Int
   rewardTier   Int
   claimedAt    DateTime @default(now())
+  isClaimed    Boolean @default(false)
 
   user         User     @relation(fields: [userId], references: [id])
 
