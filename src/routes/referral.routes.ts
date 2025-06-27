@@ -12,5 +12,5 @@ router.post('/claim', authMiddleware, claimReferralRewards);
 router.post('/is-claimed', authMiddleware, isClaimedReward);
 
 //Referral Reward Route
-router.post('/referral-reward', authMiddleware, claimReferralReward);
+router.get('/referral-reward', authMiddleware, claimReferralReward);
 export default router;
