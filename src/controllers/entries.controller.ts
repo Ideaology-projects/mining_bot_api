@@ -10,7 +10,6 @@ export const entriesAgaintsUser = async (req: Request, res: Response) => {
   }
 
   try {
-    // Check if entry exists for given uuid and userId
     const existingEntry = await prisma.entry.findUnique({
       where: {
         uuid_userId: {
@@ -41,7 +40,7 @@ export const entriesAgaintsUser = async (req: Request, res: Response) => {
         return res.json({ success: true, message: 'Entry updated', data: updatedEntry });
       }
     } else {
-      // Entry does not exist, create it with value and mode
+      // Entry does not exist, create a new one
       const newEntry = await prisma.entry.create({
         data: {
           uuid,
@@ -58,19 +57,40 @@ export const entriesAgaintsUser = async (req: Request, res: Response) => {
   }
 };
 
-
-
 export const getEntryAgainstUser = async (req: Request, res: Response) => {
- const userId = req.user?.id;
- try {
-  const entry = await prisma.entry.findMany({
-    where: {
-      id:userId
+  const loggedInUserId = req.user?.id;
+  console.log("loggedInUserId", loggedInUserId);
+  const userId= req.params.userId;
+  
+
+  if (!loggedInUserId) {
+    return res.status(401).json({ success: false, message: 'Unauthorized: User ID not found.' });
+  }
+
+  try {
+    const loggedInUserEntries = await prisma.entry.findMany({
+      where: {
+        userId: loggedInUserId,
+      },
+    });
+
+    let requestedUserEntries: any[] = [];
+    if (userId) {
+      requestedUserEntries = await prisma.entry.findMany({
+        where: {
+          userId: Number(userId),
+        },
+      });
     }
-  })
-  res.json({ success: true, data: entry });
- } catch (error) {
-    console.error('Error getting entry:', error);
+
+    res.json({
+      success: true,
+      loggedInUserEntries,
+      requestedUserEntries,
+    });
+  } catch (error) {
+    console.error('Error getting entries:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
- }
-}
+  }
+};
+
