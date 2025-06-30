@@ -58,8 +58,6 @@ export const entriesAgaintsUser = async (req: Request, res: Response) => {
   }
 };
 
-
-
 export const getEntryAgainstUser = async (req: Request, res: Response) => {
  const userId = req.user?.id;
  try {
