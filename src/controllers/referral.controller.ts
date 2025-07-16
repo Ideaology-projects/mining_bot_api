@@ -19,36 +19,28 @@ export const getReferralStatus = async (req: Request, res: Response) => {
   }
 };
 
-export const claimReferralRewards = async (req: Request, res: Response) => {
+export const getClaimedRewards = async (req: Request, res: Response) => {
   const currentUserId = req.user?.id;
 
+  if (!currentUserId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   try {
-    const pendingRewards = await prisma.reward.findMany({
+    const claimedRewards = await prisma.reward.findMany({
       where: {
         userId: Number(currentUserId),
-        status: 'pending',
+        status: 'credited', // Only claimed rewards
+      },
+      orderBy: {
+        createdAt: 'desc', // Optional: latest first
       },
     });
 
-    if (pendingRewards.length === 0) {
-      res.status(400).json({ error: 'No pending rewards to claim.' });
-      return;
-    }
-
-    // Mark all pending rewards as credited
-    await prisma.reward.updateMany({
-      where: {
-        userId: Number(currentUserId),
-        status: 'pending',
-      },
-      data: { status: 'credited' },
-    });
-
-    res.json({ message: 'Rewards claimed successfully.' });
-    return;
+    res.json({ rewards: claimedRewards });
   } catch (error) {
-    console.error('Reward Claim Error:', error);
+    console.error('Get Claimed Rewards Error:', error);
     res.status(500).json({ error: 'Internal server error' });
-    return;
   }
 };
+
