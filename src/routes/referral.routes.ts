@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import { getReferralStatus } from '../controllers/referral.controller';
 import {
-  getReferralStatus,
-} from '../controllers/referral.controller';
-import { claimReferralReward,isClaimedReward} from '../controllers/claimedReferralReward.controller';
-import { getClaimedRewards} from '../controllers/referral.controller';
+  claimReferralReward,
+  isClaimedReward,
+} from '../controllers/claimedReferralReward.controller';
+import { getClaimedRewards } from '../controllers/referral.controller';
 const router = Router();
 import { authMiddleware } from '../middlewares/auth.middleware';
 

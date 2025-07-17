@@ -19,11 +19,15 @@ export const getReferralStatus = async (req: Request, res: Response) => {
   }
 };
 
-export const getClaimedRewards = async (req: Request, res: Response) => {
+export const getClaimedRewards = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   const currentUserId = req.user?.id;
 
   if (!currentUserId) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
   }
 
   try {
@@ -43,4 +47,3 @@ export const getClaimedRewards = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
