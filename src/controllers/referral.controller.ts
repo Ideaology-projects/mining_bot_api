@@ -36,6 +36,16 @@ export const getClaimedRewards = async (
         userId: Number(currentUserId),
         status: 'credited', // Only claimed rewards
       },
+       include: {
+        referralRewardClaim: {
+          select: {
+            isClaimed: true,
+            rewardTier: true,
+            rewardAmount: true,
+            claimedAt: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: 'desc', // Optional: latest first
       },

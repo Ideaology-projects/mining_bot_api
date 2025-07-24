@@ -132,7 +132,7 @@ model Reward {
   type       String   
   status     String   @default("pending")  
   createdAt  DateTime @default(now())
-
+  referralRewardClaim ReferralRewardClaim?
   user       User     @relation(fields: [userId], references: [id])
 }
 
@@ -152,6 +152,7 @@ model ReferralRewardClaim {
   isClaimed    Boolean @default(false)
 
   user         User     @relation(fields: [userId], references: [id])
-
+  rewardId     Int?      @unique 
+  reward       Reward?   @relation(fields: [rewardId], references: [id])
   @@unique([userId, rewardTier])
 }
