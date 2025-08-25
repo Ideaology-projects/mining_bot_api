@@ -21,6 +21,7 @@ import swaggerUi from 'swagger-ui-express';
 import sendEmail from './routes/verifyEamil.routes';
 import startMine from './routes/startMining.route'
 import entry from './routes/entries.routes'
+import roomDecoration from './routes/room.routes'
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use('/api/v1/product',productRoutes);
 app.use('/api/v1/otp',sendEmail);
 app.use('/api/v1/mining',startMine)
 app.use('/api/v1/entry',entry)
+app.use('/api/v1/room',roomDecoration)
 
 const startCronJob = async () => {
   const { default: balanceCronJob } = await import('./jobs/balanceCron');

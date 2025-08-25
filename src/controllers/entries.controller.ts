@@ -57,26 +57,79 @@ export const entriesAgaintsUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getEntryAgainstUser = async (req: Request, res: Response) => {
-  const loggedInUserId = req.user?.id;
-  console.log("loggedInUserId", loggedInUserId);
-  const userId= req.params.userId;
+// export const getEntryAgainstUser = async (req: Request, res: Response) => {
+//   const loggedInUserId = req.user?.id;
+//   console.log("loggedInUserId", loggedInUserId);
+//   const userId= req.params.userId;
   
 
+//   if (!loggedInUserId) {
+//     return res.status(401).json({ success: false, message: 'Unauthorized: User ID not found.' });
+//   }
+
+//   try {
+//     const loggedInUserEntries = await prisma.entry.findMany({
+//       where: {
+//         userId: loggedInUserId,
+//       },
+//     });
+
+//     let requestedUserEntries: any[] = [];
+//     if (userId) {
+//       requestedUserEntries = await prisma.entry.findMany({
+//         where: {
+//           userId: Number(userId),
+//         },
+//       });
+//     }
+
+//     res.json({
+//       success: true,
+//       loggedInUserEntries,
+//       requestedUserEntries,
+//     });
+//   } catch (error) {
+//     console.error('Error getting entries:', error);
+//     res.status(500).json({ success: false, message: 'Internal Server Error' });
+//   }
+// };
+
+export const getEntryAgainstUser = async (req: Request, res: Response): Promise<void> => {
+  const loggedInUserId = req.user?.id;
+  console.log("loggedInUserId", loggedInUserId);
+  const userId = req.params.userId;
+
   if (!loggedInUserId) {
-    return res.status(401).json({ success: false, message: 'Unauthorized: User ID not found.' });
+    res.status(401).json({ success: false, message: "Unauthorized: User ID not found." });
+    return;
   }
 
   try {
+    // Get logged-in user entries
     const loggedInUserEntries = await prisma.entry.findMany({
       where: {
         userId: loggedInUserId,
       },
     });
 
+    // ✅ Get logged-in user's room (if exists)
+    const loggedInUserRoom = await prisma.room.findUnique({
+      where: {
+        userId: Number(loggedInUserId),
+      },
+    });
+
+    // Get requested user entries if userId param is provided
     let requestedUserEntries: any[] = [];
+    let requestedUserRoom: any = null;
     if (userId) {
       requestedUserEntries = await prisma.entry.findMany({
+        where: {
+          userId: Number(userId),
+        },
+      });
+
+      requestedUserRoom = await prisma.room.findUnique({
         where: {
           userId: Number(userId),
         },
@@ -86,11 +139,12 @@ export const getEntryAgainstUser = async (req: Request, res: Response) => {
     res.json({
       success: true,
       loggedInUserEntries,
+      loggedInUserRoom, 
       requestedUserEntries,
+      requestedUserRoom, 
     });
   } catch (error) {
-    console.error('Error getting entries:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error("Error getting entries:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
-
