@@ -21,10 +21,10 @@ export const entriesAgaintsUser = async (req: Request, res: Response) => {
 
     if (existingEntry) {
       if (existingEntry.value === value && existingEntry.mode === mode) {
-        // Value and mode are same, no update needed
+      
         return res.json({ success: true, message: 'Entry already up-to-date', data: existingEntry });
       } else {
-        // Value or mode is different, update both
+       
         const updatedEntry = await prisma.entry.update({
           where: {
             uuid_userId: {
@@ -40,7 +40,7 @@ export const entriesAgaintsUser = async (req: Request, res: Response) => {
         return res.json({ success: true, message: 'Entry updated', data: updatedEntry });
       }
     } else {
-      // Entry does not exist, create a new one
+      
       const newEntry = await prisma.entry.create({
         data: {
           uuid,
@@ -57,43 +57,6 @@ export const entriesAgaintsUser = async (req: Request, res: Response) => {
   }
 };
 
-// export const getEntryAgainstUser = async (req: Request, res: Response) => {
-//   const loggedInUserId = req.user?.id;
-//   console.log("loggedInUserId", loggedInUserId);
-//   const userId= req.params.userId;
-  
-
-//   if (!loggedInUserId) {
-//     return res.status(401).json({ success: false, message: 'Unauthorized: User ID not found.' });
-//   }
-
-//   try {
-//     const loggedInUserEntries = await prisma.entry.findMany({
-//       where: {
-//         userId: loggedInUserId,
-//       },
-//     });
-
-//     let requestedUserEntries: any[] = [];
-//     if (userId) {
-//       requestedUserEntries = await prisma.entry.findMany({
-//         where: {
-//           userId: Number(userId),
-//         },
-//       });
-//     }
-
-//     res.json({
-//       success: true,
-//       loggedInUserEntries,
-//       requestedUserEntries,
-//     });
-//   } catch (error) {
-//     console.error('Error getting entries:', error);
-//     res.status(500).json({ success: false, message: 'Internal Server Error' });
-//   }
-// };
-
 export const getEntryAgainstUser = async (req: Request, res: Response): Promise<void> => {
   const loggedInUserId = req.user?.id;
   console.log("loggedInUserId", loggedInUserId);
@@ -105,21 +68,18 @@ export const getEntryAgainstUser = async (req: Request, res: Response): Promise<
   }
 
   try {
-    // Get logged-in user entries
     const loggedInUserEntries = await prisma.entry.findMany({
       where: {
         userId: loggedInUserId,
       },
     });
 
-    // ✅ Get logged-in user's room (if exists)
     const loggedInUserRoom = await prisma.room.findUnique({
       where: {
         userId: Number(loggedInUserId),
       },
     });
 
-    // Get requested user entries if userId param is provided
     let requestedUserEntries: any[] = [];
     let requestedUserRoom: any = null;
     if (userId) {
