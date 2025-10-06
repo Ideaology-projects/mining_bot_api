@@ -4,8 +4,11 @@ import bcrypt from "bcryptjs";
 import prisma from "../database/prismaClient";
 import { sendResetEmail } from "../utils/invitationEmail";
 import crypto from "crypto";
+import dotenv from "dotenv";
+dotenv.config();
 
-const HMAC_SECRET = process.env.HMAC_SECRET || "super_secret_key";
+const HMAC_SECRET = process.env.HMAC_SECRET!;
+// const HMAC_SECRET = process.env.HMAC_SECRET || "super_secret_key";
 console.log("HMAC_SECRET",HMAC_SECRET)
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -116,14 +119,16 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 export const syncPassword = async (req: Request, res: Response) => {
   try {
-    const rawBody = JSON.stringify(req.body);
+ const rawBody = (req as any).rawBody; 
     const signature = req.headers["x-signature"] as string;
 
-    const expectedSignature = crypto
+   const expectedSignature = crypto
       .createHmac("sha256", HMAC_SECRET)
       .update(rawBody)
       .digest("base64");
 
+    console.log("Expected Signature:", expectedSignature);
+    console.log("Received Signature:", signature);
     if (signature !== expectedSignature) {
       return res.status(401).json({ message: "Invalid signature" });
     }

@@ -33,6 +33,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
+// middleware to capture raw body
+app.use(express.json({
+verify: (req: any, res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}));
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Sample Route
 app.get('/', (req, res) => {
