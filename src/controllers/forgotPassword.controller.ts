@@ -4,8 +4,11 @@ import bcrypt from "bcryptjs";
 import prisma from "../database/prismaClient";
 import { sendResetEmail } from "../utils/invitationEmail";
 import crypto from "crypto";
+import dotenv from "dotenv";
+dotenv.config();
 
-const HMAC_SECRET = process.env.HMAC_SECRET || "super_secret_key";
+const HMAC_SECRET = process.env.HMAC_SECRET!;
+// const HMAC_SECRET = process.env.HMAC_SECRET || "super_secret_key";
 console.log("HMAC_SECRET",HMAC_SECRET)
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -116,7 +119,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 export const syncPassword = async (req: Request, res: Response) => {
   try {
-    const rawBody = JSON.stringify(req.body);
+    const rawBody = (req as any).rawBody; 
     const signature = req.headers["x-signature"] as string;
 
     const expectedSignature = crypto
@@ -155,7 +158,13 @@ export const syncPassword = async (req: Request, res: Response) => {
       data: { password: hashedPassword },
     });
 
-    res.json({ status: "ok", user_id: user.id });
+    res.json({ 
+      status: "ok", 
+      message: "Password updated successfully", 
+      user_id: user.id, 
+      email: user.email 
+    });
+
   } catch (error) {
     console.error("Sync Password Error:", error);
     res.status(500).json({ message: "Internal server error" });

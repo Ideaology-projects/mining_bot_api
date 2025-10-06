@@ -28,11 +28,18 @@ dotenv.config();
 const app: Application = express();
 
 // Middleware
-app.use(express.json());
+// app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
+// middleware to capture raw body
+app.use(express.json({
+  verify: (req: any, res, buf) => {
+    req.rawBody = buf.toString();   // yahan raw body store karwa rahe hain
+  }
+}));
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Sample Route
 app.get('/', (req, res) => {
