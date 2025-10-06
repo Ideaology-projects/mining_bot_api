@@ -119,16 +119,14 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 export const syncPassword = async (req: Request, res: Response) => {
   try {
- const rawBody = (req as any).rawBody; 
+    const rawBody = (req as any).rawBody; 
     const signature = req.headers["x-signature"] as string;
 
-   const expectedSignature = crypto
+    const expectedSignature = crypto
       .createHmac("sha256", HMAC_SECRET)
       .update(rawBody)
       .digest("base64");
 
-    console.log("Expected Signature:", expectedSignature);
-    console.log("Received Signature:", signature);
     if (signature !== expectedSignature) {
       return res.status(401).json({ message: "Invalid signature" });
     }
@@ -160,7 +158,13 @@ export const syncPassword = async (req: Request, res: Response) => {
       data: { password: hashedPassword },
     });
 
-    res.json({ status: "ok", user_id: user.id });
+    res.json({ 
+      status: "ok", 
+      message: "Password updated successfully", 
+      user_id: user.id, 
+      email: user.email 
+    });
+
   } catch (error) {
     console.error("Sync Password Error:", error);
     res.status(500).json({ message: "Internal server error" });
