@@ -53,65 +53,119 @@ export const forgotPassword = async (req: Request, res: Response) => {
   }
 };
 
+// export const resetPassword = async (req: Request, res: Response) => {
+//   try {
+//     const { email, newPassword, confirmPassword, otp, resetToken } = req.body;
+
+//     if (!email || !newPassword || !confirmPassword || !otp || !resetToken) {
+//       return res.status(400).json({ message: "All fields are required" });
+//     }
+
+//     if (newPassword !== confirmPassword) {
+//       return res.status(400).json({ message: "Passwords do not match" });
+//     }
+
+//    const passwordRegex =
+//   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+
+//     if (!passwordRegex.test(newPassword)) {
+//       return res.status(400).json({
+//         message:
+//           "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
+//       });
+//     }
+
+//     const user = await prisma.user.findUnique({ where: { email } });
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+//     if (!user.otp || !user.otpExpiresAt || new Date() > user.otpExpiresAt) {
+//       return res.status(400).json({ message: "OTP expired or invalid" });
+//     }
+//     const hashedInputOtp = generateHmacHash(otp);
+//     if (hashedInputOtp !== user.otp) {
+//       return res.status(400).json({ message: "Invalid OTP" });
+//     }
+
+//     if (!user.resetToken || !user.resetTokenExp || new Date() > user.resetTokenExp) {
+//       return res.status(400).json({ message: "Reset token expired or invalid" });
+//     }
+//     const hashedInputReset = generateHmacHash(resetToken);
+//     console.log("hashedInputReset", hashedInputReset);
+//     if (hashedInputReset !== user.resetToken) {
+//       return res.status(400).json({ message: "Invalid reset token" });
+//     }
+
+//     const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+//     await prisma.user.update({
+//       where: { email },
+//       data: {
+//         password: hashedPassword,
+//         resetToken: null,
+//         resetTokenExp: null,
+//         otpVerified: false,
+//         otp: null,
+//         otpExpiresAt: null,
+//       },
+//     });
+
+//     res.status(200).json({ message: "Password has been reset successfully" });
+//   } catch (error) {
+//     console.error("Reset Password Error:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
 export const resetPassword = async (req: Request, res: Response) => {
   try {
-    const { email, newPassword, confirmPassword, otp, resetToken } = req.body;
+    const { email, otp, newPassword } = req.body;
 
-    if (!email || !newPassword || !confirmPassword || !otp || !resetToken) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ message: "Email, OTP and new password required" });
     }
 
-    if (newPassword !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
-
-   const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
-
+    // ✅ Password policy check
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
     if (!passwordRegex.test(newPassword)) {
       return res.status(400).json({
         message:
-          "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
+          "Password must be at least 8 characters, with uppercase, lowercase, number & special character",
       });
     }
 
+    // 🧑 User check
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    // 🕒 OTP validate
     if (!user.otp || !user.otpExpiresAt || new Date() > user.otpExpiresAt) {
       return res.status(400).json({ message: "OTP expired or invalid" });
     }
-    const hashedInputOtp = generateHmacHash(otp);
-    if (hashedInputOtp !== user.otp) {
+
+    const hashedOtp = generateHmacHash(otp);
+    if (hashedOtp !== user.otp) {
       return res.status(400).json({ message: "Invalid OTP" });
     }
 
-    if (!user.resetToken || !user.resetTokenExp || new Date() > user.resetTokenExp) {
-      return res.status(400).json({ message: "Reset token expired or invalid" });
-    }
-    const hashedInputReset = generateHmacHash(resetToken);
-    if (hashedInputReset !== user.resetToken) {
-      return res.status(400).json({ message: "Invalid reset token" });
-    }
-
+    // 🔑 Password update
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-
     await prisma.user.update({
       where: { email },
       data: {
         password: hashedPassword,
-        resetToken: null,
-        resetTokenExp: null,
-        otpVerified: false,
         otp: null,
         otpExpiresAt: null,
+        otpVerified: false,
       },
     });
 
-    res.status(200).json({ message: "Password has been reset successfully" });
-  } catch (error) {
-    console.error("Reset Password Error:", error);
+    return res.status(200).json({ message: "Password reset successfully" });
+  } catch (err) {
+    console.error("Game Reset Password Error:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
