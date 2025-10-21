@@ -53,70 +53,6 @@ export const forgotPassword = async (req: Request, res: Response) => {
   }
 };
 
-// export const resetPassword = async (req: Request, res: Response) => {
-//   try {
-//     const { email, newPassword, confirmPassword, otp, resetToken } = req.body;
-
-//     if (!email || !newPassword || !confirmPassword || !otp || !resetToken) {
-//       return res.status(400).json({ message: "All fields are required" });
-//     }
-
-//     if (newPassword !== confirmPassword) {
-//       return res.status(400).json({ message: "Passwords do not match" });
-//     }
-
-//    const passwordRegex =
-//   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
-
-//     if (!passwordRegex.test(newPassword)) {
-//       return res.status(400).json({
-//         message:
-//           "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
-//       });
-//     }
-
-//     const user = await prisma.user.findUnique({ where: { email } });
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     if (!user.otp || !user.otpExpiresAt || new Date() > user.otpExpiresAt) {
-//       return res.status(400).json({ message: "OTP expired or invalid" });
-//     }
-//     const hashedInputOtp = generateHmacHash(otp);
-//     if (hashedInputOtp !== user.otp) {
-//       return res.status(400).json({ message: "Invalid OTP" });
-//     }
-
-//     if (!user.resetToken || !user.resetTokenExp || new Date() > user.resetTokenExp) {
-//       return res.status(400).json({ message: "Reset token expired or invalid" });
-//     }
-//     const hashedInputReset = generateHmacHash(resetToken);
-//     console.log("hashedInputReset", hashedInputReset);
-//     if (hashedInputReset !== user.resetToken) {
-//       return res.status(400).json({ message: "Invalid reset token" });
-//     }
-
-//     const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-//     await prisma.user.update({
-//       where: { email },
-//       data: {
-//         password: hashedPassword,
-//         resetToken: null,
-//         resetTokenExp: null,
-//         otpVerified: false,
-//         otp: null,
-//         otpExpiresAt: null,
-//       },
-//     });
-
-//     res.status(200).json({ message: "Password has been reset successfully" });
-//   } catch (error) {
-//     console.error("Reset Password Error:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// };
-
 export const resetPassword = async (req: Request, res: Response) => {
   try {
     const { email, otp, newPassword } = req.body;
@@ -175,12 +111,12 @@ export const syncPassword = async (req: Request, res: Response) => {
   try {
     const rawBody = (req as any).rawBody; 
     const signature = req.headers["x-signature"] as string;
-
+    
     const expectedSignature = crypto
       .createHmac("sha256", HMAC_SECRET)
       .update(rawBody)
       .digest("base64");
-
+    console.log("expectedSignature",expectedSignature);
     if (signature !== expectedSignature) {
       return res.status(401).json({ message: "Invalid signature" });
     }

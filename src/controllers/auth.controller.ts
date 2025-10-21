@@ -233,3 +233,45 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
+export const syncUserRegister = async (req: Request, res: Response) => {
+  try {
+    const { email, username, password } = req.body;
+
+    if (!email || !username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email, username, and password are required." });
+    }
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res
+        .status(200)
+        .json({ message: "User already exists in Game DB." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        email,
+        password: hashedPassword, 
+        isEmailVerified: true,
+      },
+    });
+
+    console.log("✅ Synced user from web:", newUser.email);
+
+    return res.status(201).json({
+      message: "User synced successfully from Web to Game DB.",
+      user: newUser,
+    });
+  } catch (error: any) {
+    console.error("Sync error:", error.message);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+
