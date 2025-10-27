@@ -114,39 +114,39 @@ export const authenticateUser = async (req: Request, res: Response) => {
     }
 
     // ✅ Register also on vBTC WooCommerce
-    try {
-      const wooRes = await axios.post(
-        "https://vbtc.co/wp-json/wc/v3/customers",
-        {
-          email,
-          username,
-          password: password,
-        },
-        {
-          auth: {
-            username:
-              process.env.WC_KEY ||
-              "ck_978181222a1cae54bc9b82a7afbed1128777d9c3",
-            password:
-              process.env.WC_SECRET ||
-              "cs_ce3189f8c995e069a365f7163f87c2f484496450",
-          },
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+    // try {
+    //   const wooRes = await axios.post(
+    //     "https://vbtc.co/wp-json/wc/v3/customers",
+    //     {
+    //       email,
+    //       username,
+    //       password: password,
+    //     },
+    //     {
+    //       auth: {
+    //         username:
+    //           process.env.WC_KEY ||
+    //           "ck_978181222a1cae54bc9b82a7afbed1128777d9c3",
+    //         password:
+    //           process.env.WC_SECRET ||
+    //           "cs_ce3189f8c995e069a365f7163f87c2f484496450",
+    //       },
+    //       headers: { "Content-Type": "application/json" },
+    //     }
+    //   );
 
-      console.log("WooCommerce Response:", wooRes.data);
-    } catch (wooErr: any) {
-      console.error(
-        "WooCommerce Register Error:",
-        wooErr.response?.data || wooErr.message
-      );
-      // Optional: rollback game user if Woo fail? (depends on business rule)
-    }
+    //   console.log("WooCommerce Response:", wooRes.data);
+    // } catch (wooErr: any) {
+    //   console.error(
+    //     "WooCommerce Register Error:",
+    //     wooErr.response?.data || wooErr.message
+    //   );
+    //   // Optional: rollback game user if Woo fail? (depends on business rule)
+    // }
 
     return res.status(200).json({
       message:
-        "User registered successfully in Game + vBTC. An OTP has been sent to your email.",
+        "User registered successfully. An OTP has been sent to your email.",
     });
   } catch (error) {
     console.error("Registration Error:", error);
@@ -201,29 +201,29 @@ export const loginUser = async (req: Request, res: Response) => {
       data: { isOnline: true },
     });
 
-    let wpAuth = null;
-    try {
-      const wpRes = await axios.post(
-        "https://vbtc.co/wp-json/jwt-auth/v1/token",
-        {
-          username: user.username,
-          password: password,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      wpAuth = wpRes.data;
-      console.log("WordPress Login Response:", wpAuth);
-    } catch (wpErr: any) {
-      console.error("WordPress Login Error:", wpErr.response?.data || wpErr.message);
-      // Optional: continue login in Game even if WP fails
-    }
+    // let wpAuth = null;
+    // try {
+    //   const wpRes = await axios.post(
+    //     "https://vbtc.co/wp-json/jwt-auth/v1/token",
+    //     {
+    //       username: user.username,
+    //       password: password,
+    //     },
+    //     {
+    //       headers: { "Content-Type": "application/json" },
+    //     }
+    //   );
+    //   wpAuth = wpRes.data;
+    //   console.log("WordPress Login Response:", wpAuth);
+    // } catch (wpErr: any) {
+    //   console.error("WordPress Login Error:", wpErr.response?.data || wpErr.message);
+    //   // Optional: continue login in Game even if WP fails
+    // }
 
     return res.status(200).json({
       message: "Login successful!",
       gameToken,
-      wpAuth, // WP JWT response
+      // wpAuth, // WP JWT response
       newUser,
     });
 
